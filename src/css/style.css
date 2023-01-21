@@ -51,6 +51,7 @@ input {
   outline: none;
 }
 .search-form > button {
+  margin-left: 2px;
   height: 25px;
   background-color: aqua;
   border: 1px solid rgba(33, 33, 33, 0.2);
