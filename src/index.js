@@ -8,13 +8,14 @@ const refs = {
   form: document.querySelector('.search-form'),
   input: document.querySelector('.search-form input'),
   gallery: document.querySelector('.gallery'),
-  btnLoadMore: document.querySelector('.load-more'),
+
+  //   btnLoadMore: document.querySelector('.load-more'),
 };
 
 refs.form.addEventListener('submit', onFormSubmit);
-refs.btnLoadMore.addEventListener('click', onBtnKoadMoreClick);
+// refs.btnLoadMore.addEventListener('click', onBtnKoadMoreClick);
 refs.input.addEventListener('input', onInputChange);
-refs.btnLoadMore.style.display = 'none';
+// refs.btnLoadMore.style.display = 'none';
 let numberPage = 1;
 
 function onFormSubmit(evt) {
@@ -23,7 +24,7 @@ function onFormSubmit(evt) {
 
   const pictureName = refs.input.value.trim();
   if (pictureName === '') {
-    refs.btnLoadMore.style.display = 'none';
+    // refs.btnLoadMore.style.display = 'none';
     return;
   }
   getPictureArray(pictureName).then(imageProcessing);
@@ -37,7 +38,7 @@ async function getPictureArray(name) {
 
     return response;
   } catch (error) {
-    refs.btnLoadMore.style.display = 'none';
+    // refs.btnLoadMore.style.display = 'none';
     Notiflix.Notify.warning(
       'Were sorry, but youve reached the end of search results.'
     );
@@ -59,22 +60,17 @@ function imageProcessing(response) {
   const pictures = response.data.hits;
   const renPict = renderPictures(pictures);
   refs.gallery.insertAdjacentHTML('beforeend', renPict);
+
   var lightbox = new SimpleLightbox('div.gallery a', {
     captionsData: 'alt',
     captionDelay: 250,
   });
   lightbox.refresh();
-  refs.btnLoadMore.style.display = 'flex';
-  if (numberPage > 1) {
-    const { height } = document
-      .querySelector('.gallery')
-      .firstElementChild.getBoundingClientRect();
-    window.scrollBy({
-      top: height * 1.5,
-      behavior: 'smooth',
-    });
-  }
+  //   refs.btnLoadMore.style.display = 'flex';
+
   numberPage += 1;
+  let target = document.querySelector('.gallery >a:last-child');
+  infScroll(target);
 }
 
 function renderPictures(pictures) {
@@ -106,19 +102,22 @@ function renderPictures(pictures) {
     .join('');
 }
 
-function onBtnKoadMoreClick(event) {
-  refs.btnLoadMore.style.display = 'none';
-  const pictureName = refs.input.value.trim();
-  getPictureArray(pictureName).then(imageProcessing);
-  const { height } = document
-    .querySelector('.gallery')
-    .firstElementChild.getBoundingClientRect();
-  window.scrollBy({
-    top: height * 2,
-    behavior: 'smooth',
-  });
-  refs.btnLoadMore.style.display = 'flex';
-}
 function onInputChange(e) {
   numberPage = 1;
+}
+function infScroll(target) {
+  let observer = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && numberPage > 1) {
+          console.log(entry);
+          const pictureName = refs.input.value.trim();
+          getPictureArray(pictureName).then(imageProcessing);
+        }
+      });
+    },
+    { threshold: 0.5 }
+  );
+  observer.observe(target);
+  console.log(target);
 }
