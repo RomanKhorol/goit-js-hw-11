@@ -15,7 +15,7 @@ const refs = {
 refs.form.addEventListener('submit', onFormSubmit);
 // refs.btnLoadMore.addEventListener('click', onBtnKoadMoreClick);
 refs.input.addEventListener('input', onInputChange);
-// refs.btnLoadMore.style.display = 'none';
+
 let numberPage = 1;
 
 function onFormSubmit(evt) {
@@ -24,7 +24,6 @@ function onFormSubmit(evt) {
 
   const pictureName = refs.input.value.trim();
   if (pictureName === '') {
-    // refs.btnLoadMore.style.display = 'none';
     return;
   }
   getPictureArray(pictureName).then(imageProcessing);
@@ -38,7 +37,6 @@ async function getPictureArray(name) {
 
     return response;
   } catch (error) {
-    // refs.btnLoadMore.style.display = 'none';
     Notiflix.Notify.warning(
       'Were sorry, but youve reached the end of search results.'
     );
@@ -66,7 +64,6 @@ function imageProcessing(response) {
     captionDelay: 250,
   });
   lightbox.refresh();
-  //   refs.btnLoadMore.style.display = 'flex';
 
   numberPage += 1;
   let target = document.querySelector('.gallery >a:last-child');
