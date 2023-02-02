@@ -55,19 +55,19 @@ function imageProcessing(response) {
   if (numberPage === 1) {
     Notiflix.Notify.success(`Hooray! We found ${numberOfHits} images.`);
   }
+
   const pictures = response.data.hits;
   const renPict = renderPictures(pictures);
   refs.gallery.insertAdjacentHTML('beforeend', renPict);
 
-  var lightbox = new SimpleLightbox('div.gallery a', {
+  numberPage += 1;
+  let target = document.querySelector('.gallery >a:last-child');
+  infScroll(target);
+  let lightbox = new SimpleLightbox('.gallery a', {
     captionsData: 'alt',
     captionDelay: 250,
   });
   lightbox.refresh();
-
-  numberPage += 1;
-  let target = document.querySelector('.gallery >a:last-child');
-  infScroll(target);
 }
 
 function renderPictures(pictures) {
@@ -116,5 +116,6 @@ function infScroll(target) {
     { threshold: 0.5 }
   );
   observer.observe(target);
+
   console.log(target);
 }
